@@ -1,6 +1,4 @@
 import os
-import intel_extension_for_pytorch
-import oneccl_bindings_for_pytorch
 import torch
 import torch.distributed as dist
 import torch.multiprocessing as mp
@@ -10,6 +8,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
+from torch_setup import get_device, get_device_type, init_distributed
 
 # Define CNN Model
 class SimpleCNN(nn.Module):
@@ -31,10 +30,10 @@ class SimpleCNN(nn.Module):
         return x
 
 # Distributed Training Function
-def train(rank, local_rank, world_size):
+def train(rank, world_size):
     """ Train the model using DDP """
-    dist.init_process_group(backend="ccl", init_method="env://", rank=rank, world_size=world_size)
-    device = torch.device(f"xpu:{local_rank}")
+    
+    device = get_device()
     
     # Load Dataset
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
@@ -45,7 +44,7 @@ def train(rank, local_rank, world_size):
 
     # Model
     model = SimpleCNN().to(device)
-    model = DDP(model, device_ids=[local_rank])
+    model = DDP(model)
 
     # Loss and Optimizer
     criterion = nn.CrossEntropyLoss()
@@ -74,7 +73,5 @@ def train(rank, local_rank, world_size):
 
 # Main Entry Point
 if __name__ == "__main__":
-    world_size = int(os.environ["WORLD_SIZE"])
-    rank = int(os.environ["RANK"])
-    local_rank = int(os.environ["LOCAL_RANK"])
-    train(rank, local_rank, world_size)
+    dist, rank, world_size = init_distributed()
+    train(rank, world_size)

@@ -8,7 +8,7 @@ import torch
 def get_device_type():
     if torch.cuda.is_available():
         return "cuda"
-    elif torch.xpu.is_avaiable():
+    elif torch.xpu.is_available():
         return "xpu"
     else:
         return cpu
@@ -20,7 +20,7 @@ def get_device(gpu=None):
     local_rank = int(os.environ["LOCAL_RANK"])    
     return torch.device(f"{gpu}:{local_rank}")
 
-def init_distributed(backend="nccl"):
+def init_distributed(backend=None):
     """
     Initialize the default process group.
     """
@@ -48,7 +48,6 @@ def init_distributed(backend="nccl"):
     master_addr = socket.gethostname()
     print(f"I am rank {rank} of {world_size} - {local_rank} on {master_addr}")    
     master_addr = comm.bcast(master_addr, root=0)
-    print(master_addr)
     os.environ["MASTER_ADDR"] = master_addr
     os.environ["MASTER_PORT"] = "5676"
     dist.init_process_group(
