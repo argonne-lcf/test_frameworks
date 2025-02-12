@@ -61,9 +61,10 @@ def train(rank, world_size):
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
-            total_loss += loss.item()
-        
-        print(f"Rank {rank}, Epoch {epoch}, Loss: {total_loss / len(train_loader)}")
+            total_loss += loss
+        dist.all_reduce(total_loss)
+        if rank == 0:
+            print(f"Epoch {epoch}, Loss: {total_loss.item() / len(train_loader)}")
 
     # Save model (only on rank 0)
     if rank == 0:

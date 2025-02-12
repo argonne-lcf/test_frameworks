@@ -4,6 +4,7 @@ comm = MPI.COMM_WORLD
 import torch.distributed as dist
 import os
 import torch
+from torch.profiler import profile, record_function, ProfilerActivity, schedule, tensorboard_trace_handler
 
 def get_device_type():
     if torch.cuda.is_available():
@@ -12,6 +13,15 @@ def get_device_type():
         return "xpu"
     else:
         return cpu
+
+def get_profiler_activities():
+    activities=[ProfilerActivity.CPU]
+    gpu = get_device_type()
+    if gpu == 'xpu':
+        activities += [ProfilerActivity.XPU]
+    if gpu == "cuda":
+        activities += [ProfilerActivity.CPU]
+    return activities
 
 def get_device(gpu=None):
     if gpu == None:

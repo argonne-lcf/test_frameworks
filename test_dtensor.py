@@ -4,13 +4,14 @@ from torch.distributed._tensor import DeviceMesh, DTensor, Replicate, Shard
 from torch.profiler import profile, record_function, ProfilerActivity, schedule, tensorboard_trace_handler
 import time
 import argparse
-from torch_setup import init_distributed, get_device
+from torch_setup import init_distributed, get_device, get_device_type, get_profiler_activities
 
 def parse_args():
     parser = argparse.ArgumentParser(description="DTensor + torch.profiler example.")
     # Tensor parallel (TP) size (how many ranks in our device mesh)
     parser.add_argument("--tp-size", type=int, default=4, help="Number of ranks/devices to use in the device mesh.")
     parser.add_argument("--dim", type=int, default=256, help="dimension of the matrix")
+    parser.add_argument("--trace-dir", type=str, default='dtensor_trace')
     args = parser.parse_args()
     return args
     
@@ -78,13 +79,14 @@ def main():
         dist.barrier()
     run(0)
     with profile(
-        activities=[ProfilerActivity.CPU, ProfilerActivity.XPU],
-        record_shapes=True,
-        profile_memory=True
+            activities=get_profiler_activities(), 
+            record_shapes=True,
+            profile_memory=True
     ) as prof:
         for step in range(1, 6):
             run(step)
-    prof.export_chrome_trace(f"trace-{rank}-of-{world_size}.json")
+    os.makedirs(args.trace_dir, exist_ok=True)
+    prof.export_chrome_trace(f"{args.trace_dir}/trace-{rank}-of-{world_size}.json")
 
     # 8. (Optional) convert the last result to local to see what is on this rank
     #local_c = dt_c.to_local()
