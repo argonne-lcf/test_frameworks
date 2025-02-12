@@ -3,6 +3,7 @@ import torch
 import torch.distributed as dist
 import torch.multiprocessing as mp
 from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
 from torch.utils.data import DataLoader, DistributedSampler
 from torch.profiler import profile, record_function, ProfilerActivity, schedule, tensorboard_trace_handler
 import torch.nn as nn
@@ -11,6 +12,17 @@ import torchvision
 import torchvision.transforms as transforms
 from torchvision.models import resnet50
 import argparse
+
+
+from torch.distributed.fsdp.fully_sharded_data_parallel import (
+    CPUOffload,
+    BackwardPrefetch,
+)
+from torch.distributed.fsdp.wrap import (
+    size_based_auto_wrap_policy,
+    enable_wrap,
+    wrap,
+)
 
 
 from torch_setup import init_distributed, get_device, get_profiler_activities
@@ -25,6 +37,7 @@ def parse_args():
     parser.add_argument("--batch-size", type=int, default=16, help="batch size")
     parser.add_argument("--trace-dir", type=str, default='resnet50_trace')
     parser.add_argument("--num-workers", type=int, default=2)
+    parser.add_argument("--fsdp", action="stored_true")
     args = parser.parse_args()
     return args
 
@@ -35,7 +48,11 @@ args = parse_args()
 def create_model(device):
     model = resnet50(pretrained=False)
     model = model.to(device)
-    model = DDP(model)
+    if args.fsdp:
+        model = FSDP(model, device_ids=device)        
+    else:
+        model = DDP(model)            
+
     return model
 
 # Training Function
