@@ -27,7 +27,6 @@ def main():
     #    This maps logical mesh coordinates [0..world_size-1] to CUDA devices [0..world_size-1].
     import numpy as np
     mesh = DeviceMesh(gpu, torch.tensor(np.arange(world_size).reshape(world_size//args.tp_size, args.tp_size).transpose()))
-    print(rank)
     if rank == 0:
         print(f"Device mesh: {mesh}")
     # 4. Create local tensors on each rank (just random data plus an offset for demonstration)
