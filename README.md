@@ -14,7 +14,7 @@ To run the test
 
 * Torch Dist
   ```bash
-  mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_torch_dist.py --tp-size 8 --dim 96
+  mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_torch_dist.py
   ```
 
 * DTensor
