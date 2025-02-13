@@ -36,7 +36,7 @@ def parse_args():
     parser.add_argument("--steps", type=int, default=100, help="dimension of the matrix")
     parser.add_argument("--batch-size", type=int, default=16, help="batch size")
     parser.add_argument("--trace-dir", type=str, default='resnet50_trace')
-    parser.add_argument("--num-workers", type=int, default=2)
+    parser.add_argument("--num-workers", type=int, default=4)
     parser.add_argument("--fsdp", action="store_true")
     parser.add_argument("--profile", action="store_true")
     args = parser.parse_args()
@@ -47,7 +47,7 @@ args = parse_args()
 
 # Define ResNet-50 Model
 def create_model(device):
-    model = resnet50(pretrained=False)
+    model = resnet50(weights=False)
     model = model.to(device)
     if args.fsdp:
         model = FSDP(model)        
@@ -59,6 +59,7 @@ def create_model(device):
 # Training Function
 def train(rank, world_size):
     device = get_device()
+    print(f"Running on {device}")
     # Data Transforms
     transform = transforms.Compose([
         transforms.Resize((224, 224)),
