@@ -1,10 +1,13 @@
+#!/usr/bin/env python
+# 
 import socket
 from mpi4py import MPI
 comm = MPI.COMM_WORLD
+import torch
 import torch.distributed as dist
 import os
-import torch
 from torch.profiler import profile, record_function, ProfilerActivity, schedule, tensorboard_trace_handler
+
 
 def get_device_type():
     if torch.cuda.is_available():
@@ -12,7 +15,18 @@ def get_device_type():
     elif torch.xpu.is_available():
         return "xpu"
     else:
-        return cpu
+        return "cpu"
+
+DEVICE = get_device_type()
+
+def get_device_count():
+    global DEVICE
+    if DEVICE == "xpu":
+        return torch.xpu.device_count()
+    elif DEVICE == "cuda":
+        return torch.cuda.device_count()
+    else:
+        return 0
 
 def get_profiler_activities():
     activities=[ProfilerActivity.CPU]

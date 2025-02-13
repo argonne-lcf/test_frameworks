@@ -37,7 +37,8 @@ def parse_args():
     parser.add_argument("--batch-size", type=int, default=16, help="batch size")
     parser.add_argument("--trace-dir", type=str, default='resnet50_trace')
     parser.add_argument("--num-workers", type=int, default=2)
-    parser.add_argument("--fsdp", action="stored_true")
+    parser.add_argument("--fsdp", action="store_true")
+    parser.add_argument("--profile", action="store_true")
     args = parser.parse_args()
     return args
 
@@ -49,7 +50,7 @@ def create_model(device):
     model = resnet50(pretrained=False)
     model = model.to(device)
     if args.fsdp:
-        model = FSDP(model, device_ids=device)        
+        model = FSDP(model)        
     else:
         model = DDP(model)            
 
@@ -110,12 +111,15 @@ def train(rank, world_size):
 # Main Execution
 if __name__ == "__main__":
     dist, rank, world_size = init_distributed()
-    with profile(
-            activities=get_profiler_activities(), 
-            record_shapes=True,
-            profile_memory=True
-    ) as prof:
+    if args.profile:
+        with profile(
+                activities=get_profiler_activities(), 
+                record_shapes=True,
+                profile_memory=True
+        ) as prof:
+            train(rank, world_size)
+        os.makedirs(args.trace_dir, exist_ok=True)
+        prof.export_chrome_trace(f"{args.trace_dir}/trace-{rank}-of-{world_size}.json")
+    else:
         train(rank, world_size)
-    os.makedirs(args.trace_dir, exist_ok=True)
-    prof.export_chrome_trace(f"{args.trace_dir}/trace-{rank}-of-{world_size}.json")
         
