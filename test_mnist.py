@@ -40,7 +40,7 @@ def train(rank, world_size):
     train_dataset = torchvision.datasets.MNIST(root="./data", train=True, transform=transform, download=True)
     
     train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank, shuffle=True)
-    train_loader = DataLoader(train_dataset, batch_size=64, shuffle=False, sampler=train_sampler, num_workers=4)
+    train_loader = DataLoader(train_dataset, batch_size=64, shuffle=False, sampler=train_sampler, num_workers=0)
 
     # Model
     model = SimpleCNN().to(device)
@@ -64,7 +64,7 @@ def train(rank, world_size):
             total_loss += loss
         dist.all_reduce(total_loss)
         if rank == 0:
-            print(f"Epoch {epoch}, Loss: {total_loss.item() / len(train_loader)}")
+            print(f"Epoch {epoch}, Loss: {total_loss.item() / len(train_loader)}", flush=True)
 
     # Save model (only on rank 0)
     if rank == 0:

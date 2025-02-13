@@ -18,7 +18,7 @@ def parse_args():
 def main():
     # 1. Initialize the distributed environment with NCCL for GPU usage
     args = parse_args()
-    dist, rank, world_size = init_distributed(backend="ccl")
+    dist, rank, world_size = init_distributed()
 
     # 2. Set local GPU device
     gpu = get_device_type()    
