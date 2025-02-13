@@ -1,14 +1,13 @@
 # Testing Frameworks
 
-These are a set of simple pytorch examples to test whether the frameworks work well or not. This repo will be used to keep track of the issue of the frameworks module on ALCF systems. 
+This repo is meant to be used for testing the frameworks software stacks on ALCF systems. It includes a set of simple pytorch examples to test whether the frameworks work well or not. 
 
-The issues will be reported here: https://github.com/argonne-lcf/test_frameworks/issues
+The issues will be reported here: https://github.com/argonne-lcf/test_frameworks/issues. This will be used to keep track of all the issues. 
 
 - test_dtensor: testing the fundamental unit
 - test_resnet50: resnet50 with FSDP or DDP
 - test_mnist: MNIST with DDP
 - test_mpi4py: testing mpi4py
-
 
 To run the test
 
