@@ -2,6 +2,8 @@
 
 These are a set of simple pytorch examples to test whether the frameworks work well or not. This repo will be used to keep track of the issue of the frameworks module on ALCF systems. 
 
+The issues will be reported here: https://github.com/argonne-lcf/test_frameworks/issues
+
 - test_dtensor: testing the fundamental unit
 - test_resnet50: resnet50 with FSDP or DDP
 - test_mnist: MNIST with DDP
