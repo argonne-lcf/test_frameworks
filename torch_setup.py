@@ -52,7 +52,7 @@ def get_profiler_activities():
     if gpu == 'xpu':
         activities += [ProfilerActivity.XPU]
     if gpu == "cuda":
-        activities += [ProfilerActivity.CPU]
+        activities += [ProfilerActivity.CUDA]
     return activities
 
 def get_device(gpu=None):
