@@ -40,6 +40,7 @@ comm.barrier()
 niters = 10
 
 time_iters = np.zeros(niters)
+print_rank_0("Broadcast")
 for i in range(niters):
    x = torch.ones([1024, 1024]).to(device, non_blocking=True)
    t5 = datetime.datetime.now() 
@@ -47,10 +48,11 @@ for i in range(niters):
    t6 = datetime.datetime.now()
    elapsed = (t6 - t5).total_seconds()
    time_iters[i] = elapsed
-   print_rank_0(f"[{dist_my_rank}] Python: Elapsed time in each iter for broadcast: {elapsed:.8f})")
+   print_rank_0(f"[{dist_my_rank}] Iter-{i}: {elapsed:.8f}")
 print_rank_0(f"Average time for broadcast (exclude first iter): {np.mean(time_iters[1:]):.8f} ")
 
-comm.barrier()   
+comm.barrier()
+print_rank_0("Allreduce")
 for i in range(niters):
    x = torch.ones([1024, 1024]).to(device, non_blocking=True)
    # print_rank_0(x)
@@ -58,14 +60,13 @@ for i in range(niters):
    dist.all_reduce(x,op=dist.ReduceOp.SUM)  # Added Extra op
    t6 = datetime.datetime.now()
    elapsed = (t6 - t5).total_seconds()
-   time_iters[i] = elapsed   
-   print_rank_0(f"[{dist_my_rank}] Python: Elapsed time in each iter for all_reduce : {elapsed:.8f})")
+   time_iters[i] = elapsed
+   print_rank_0(f"[{dist_my_rank}] Iter-{i}: {elapsed:.8f}")   
 print_rank_0(f"Average time for all_reduce (exclude first iter): {np.mean(time_iters[1:]):.8f} ")
 
 comm.barrier()
 
-
-
+print_rank_0("Reduce")
 for i in range(niters):
    x = torch.ones([1024, 1024]).to(device, non_blocking=True)
    # print_rank_0(x)
@@ -73,11 +74,12 @@ for i in range(niters):
    dist.reduce(x, dst=0, op=dist.ReduceOp.SUM)  # Added Extra op
    t6 = datetime.datetime.now()
    elapsed = (t6 - t5).total_seconds()
-   time_iters[i] = elapsed   
-   print_rank_0(f"[{dist_my_rank}] Python: Elapsed time in each iter for reduce : {elapsed:.8f})")
+   time_iters[i] = elapsed
+   print_rank_0(f"[{dist_my_rank}] Iter-{i}: {elapsed:.8f}")      
 print_rank_0(f"Average time for reduce (exclude first iter): {np.mean(time_iters[1:]):.8f} ")      
 comm.barrier()
 
+print_rank_0("Allgather")
 for i in range(niters):
    x = torch.ones(4).to(device, non_blocking=True)
    y = [torch.zeros(4).to(device, non_blocking=True) for _ in range(world_size)]
@@ -86,10 +88,12 @@ for i in range(niters):
    dist.all_gather(y, x)
    t6 = datetime.datetime.now()
    elapsed = (t6 - t5).total_seconds()
-   print_rank_0(f"[{dist_my_rank}] Python: Elapsed time in each iter for all_gather : {elapsed:.8f})")
+   print_rank_0(f"[{dist_my_rank}] Iter-{i}: {elapsed:.8f}")      
 print_rank_0(f"Average time for all_gather (exclude first iter): {np.mean(time_iters[1:]):.8f} ")      
 
 comm.barrier()
+
+print_rank_0("Reduce_scatter")
 for i in range(niters):
    x = torch.ones(world_size).to(device, non_blocking=True)
    y = torch.zeros(1).to(device, non_blocking=True)
@@ -99,10 +103,11 @@ for i in range(niters):
    t6 = datetime.datetime.now()
    elapsed = (t6 - t5).total_seconds()
    time_iters[i] = elapsed
-   print_rank_0(f"[{dist_my_rank}] Python: Elapsed time in each iter for reduce_scatter : {elapsed:.8f})")
+   print_rank_0(f"[{dist_my_rank}] Iter-{i}: {elapsed:.8f}")      
 print_rank_0(f"Average time for reduce_scatter (exclude first iter): {np.mean(time_iters[1:]):.8f} ")      
    
 comm.barrier()
+print_rank_0("all_to_all")
 for i in range(niters):
    x_in = torch.ones(1024).to(device, non_blocking=True)
    x_out = torch.ones(1024).to(device, non_blocking=True)
@@ -110,6 +115,6 @@ for i in range(niters):
    dist.all_to_all_single(x_out, x_in)
    t6 = datetime.datetime.now()
    elapsed = (t6 - t5).total_seconds()   
-   time_iters[i] = elapsed   
-   print_rank_0(f"[{dist_my_rank}] Python: Elapsed time in each iter for all_to_all : {elapsed:.8f})")
+   time_iters[i] = elapsed
+   print_rank_0(f"[{dist_my_rank}] Iter-{i}: {elapsed:.8f}")      
 print_rank_0(f"Average time for all_to_all (exclude first iter): {np.mean(time_iters[1:]):.8f} ")      
