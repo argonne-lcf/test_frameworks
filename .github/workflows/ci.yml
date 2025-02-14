@@ -101,6 +101,3 @@ jobs:
         run: |
           source ${VENV_PATH}/bin/activate
           mpirun -np 2 python3 ./test_mpi4py.py
-
-	  
-	 
