@@ -4,35 +4,27 @@ This repo is meant to be used for testing the frameworks software stacks on ALCF
 
 The issues will be reported here: https://github.com/argonne-lcf/test_frameworks/issues. This will be used to keep track of all the issues. 
 
-- test_dist: torch dist communication test
-- test_dtensor: testing the fundamental unit
-- test_resnet50: resnet50 with FSDP or DDP
-- test_mnist: MNIST with DDP
-- test_mpi4py: testing mpi4py
-
-To run the test
-
-* Torch Dist
+* Torch Dist test: Torch dist communication tests, including all the collective communicatino tests. 
   ```bash
   mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_torch_dist.py
   ```
 
-* DTensor
+* DTensor: This is testing the distributed matrix multiplication tests using DTensor. --dim is the total dimension of the global matrix, and --tp-size is the organization of the processor mesh (tp_size, world_size/tp_size)
   ```bash
   mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_dtensor.py --tp-size 8 --dim 96
   ```
 
-* ResNet50
+* ResNet50: Resnet50 with FSDP or DDP
   ```bash
   mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_resnet50.py
   ```
 
-* MNIST
+* MNIST: MNIST with DDP
   ```bash
   mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_mnist.py
   ```
 
-* mpi4py
+* mpi4py: Testing mpi4py
   ```bash
   mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_mpi4py.py
   ```
