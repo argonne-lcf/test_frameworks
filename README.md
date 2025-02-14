@@ -37,5 +37,6 @@ To run the test
   mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_mpi4py.py
   ```
 
+## How to contribute
 
-
+If you have any tests that you think important to include, please send a PR. In the PR, please include 1) the code to run; 2) information about what aspects of the software / hardware the test is evaluating. 
