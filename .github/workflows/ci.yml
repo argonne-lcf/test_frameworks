@@ -19,11 +19,6 @@ jobs:
     env:
       CC: gcc-${{ matrix.gcc }}
       CXX: g++-${{ matrix.gcc }}
-      DFTRACER_BUILD_TYPE: "Debug"
-      DFTRACER_ENABLE: 1
-      DFTRACER_LOG_LEVEL: "INFO"
-      DLIO_EXEC: ${{ matrix.venv == 'via-setup' && 'dlio_benchmark' || 'python dlio_benchmark/main.py' }}
-      GOTCHA_DEBUG: 1
       OMPI_ALLOW_RUN_AS_ROOT: 1
       OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
       PYTHON_VER: ${{ matrix.python }}
@@ -81,31 +76,31 @@ jobs:
       - name: test_dtensor
         run: |
           source ${VENV_PATH}/bin/activate
-          mpirun -np 2 test_dtensor.py --tp-size 2
+          mpirun -np 2 python3 ./test_dtensor.py --tp-size 2
       - name: test_resnet50_ddp
         run: |
           source ${VENV_PATH}/bin/activate
-          mpirun -np 2 test_resnet50.py
+          mpirun -np 2 python3 ./test_resnet50.py
       - name: test_resnet50_fsdp
         run: |
           source ${VENV_PATH}/bin/activate
-          mpirun -np 2 test_resnet50.py --fsdp
+          mpirun -np 2 python3 ./test_resnet50.py --fsdp
       - name: test_resnet50_profile
         run: |
           source ${VENV_PATH}/bin/activate
-          mpirun -np 2 test_resnet50.py --fsdp --profile
+          mpirun -np 2 python3 ./test_resnet50.py --fsdp --profile
       - name: test_mnist
         run: |
           source ${VENV_PATH}/bin/activate
-          mpirun -np 2 test_mnist.py 
+          mpirun -np 2 python3 ./test_mnist.py 
       - name: test_torch_dist
         run: |
           source ${VENV_PATH}/bin/activate
-          mpirun -np 2 test_resnet50.py
+          mpirun -np 2 python3 test_torch_dist.py
       - name: test_mpi4py
         run: |
           source ${VENV_PATH}/bin/activate
-          mpirun -np 2 test_mpi4py.py 
+          mpirun -np 2 python3 test_mpi4py.py 
 
 	  
 	 
