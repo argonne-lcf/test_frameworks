@@ -13,7 +13,7 @@ jobs:
         os: [ubuntu-22.04]
         gcc: [10]
         python: ["3.10", "3.11", "3.12"]
-        venv: ["via-setup", "via-reqs"]
+        venv: ["via-reqs"]
     name: ${{ matrix.os }}-${{ matrix.gcc }}-${{ matrix.python }}-${{ matrix.venv }}
     runs-on: ${{ matrix.os }}
     env:
