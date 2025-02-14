@@ -96,11 +96,11 @@ jobs:
       - name: test_torch_dist
         run: |
           source ${VENV_PATH}/bin/activate
-          mpirun -np 2 python3 test_torch_dist.py
+          mpirun -np 2 python3 ./test_torch_dist.py
       - name: test_mpi4py
         run: |
           source ${VENV_PATH}/bin/activate
-          mpirun -np 2 python3 test_mpi4py.py 
+          mpirun -np 2 python3 ./test_mpi4py.py
 
 	  
 	 
