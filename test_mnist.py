@@ -1,14 +1,17 @@
 import os
+
 import torch
 import torch.distributed as dist
 import torch.multiprocessing as mp
-from torch.nn.parallel import DistributedDataParallel as DDP
-from torch.utils.data import DataLoader, DistributedSampler
 import torch.nn as nn
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data import DataLoader, DistributedSampler
+
 from torch_setup import get_device, get_device_type, init_distributed
+
 
 # Define CNN Model
 class SimpleCNN(nn.Module):
@@ -29,18 +32,31 @@ class SimpleCNN(nn.Module):
         x = self.softmax(self.fc2(x))
         return x
 
+
 # Distributed Training Function
 def train(rank, world_size):
-    """ Train the model using DDP """
-    
+    """Train the model using DDP"""
+
     device = get_device()
-    
+
     # Load Dataset
-    transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
-    train_dataset = torchvision.datasets.MNIST(root="./data", train=True, transform=transform, download=True)
-    
-    train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank, shuffle=True)
-    train_loader = DataLoader(train_dataset, batch_size=64, shuffle=False, sampler=train_sampler, num_workers=0)
+    transform = transforms.Compose(
+        [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+    )
+    train_dataset = torchvision.datasets.MNIST(
+        root="./data", train=True, transform=transform, download=True
+    )
+
+    train_sampler = DistributedSampler(
+        train_dataset, num_replicas=world_size, rank=rank, shuffle=True
+    )
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=64,
+        shuffle=False,
+        sampler=train_sampler,
+        num_workers=0,
+    )
 
     # Model
     model = SimpleCNN().to(device)
@@ -64,13 +80,17 @@ def train(rank, world_size):
             total_loss += loss
         dist.all_reduce(total_loss)
         if rank == 0:
-            print(f"Epoch {epoch}, Loss: {total_loss.item() / len(train_loader)}", flush=True)
+            print(
+                f"Epoch {epoch}, Loss: {total_loss.item() / len(train_loader)}",
+                flush=True,
+            )
 
     # Save model (only on rank 0)
     if rank == 0:
         torch.save(model.module.state_dict(), "mnist_ddp.pth")
 
     dist.destroy_process_group()
+
 
 # Main Entry Point
 if __name__ == "__main__":
