@@ -37,7 +37,7 @@ def train(rank, world_size):
     
     # Load Dataset
     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
-    train_dataset = torchvision.datasets.MNIST(root="./data", train=True, transform=transform, download=True)
+    train_dataset = torchvision.datasets.MNIST(root="/tmp/datascience/alcf_training/MNIST", train=True, transform=transform, download=True)
     
     train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=rank, shuffle=True)
     train_loader = DataLoader(train_dataset, batch_size=64, shuffle=False, sampler=train_sampler, num_workers=4)
@@ -68,7 +68,7 @@ def train(rank, world_size):
 
     # Save model (only on rank 0)
     if rank == 0:
-        torch.save(model.module.state_dict(), "mnist_ddp.pth")
+        torch.save(model.module.state_dict(), "/tmp/datascience/alcf_training/MNIST/mnist_ddp.pth")
 
     dist.destroy_process_group()
 
