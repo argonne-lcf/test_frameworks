@@ -25,4 +25,4 @@ torch.save(data, f"{args.output_folder}/data-{comm.rank}-of-{comm.size}.pt")
 
 if comm.rank == 0:
     print(f"Loading checkpoint")
-torch.load(data, f"{args.output_folder}/data-{comm.rank}-of-{comm.size}.pt")
+data = torch.load(f"{args.output_folder}/data-{comm.rank}-of-{comm.size}.pt")
