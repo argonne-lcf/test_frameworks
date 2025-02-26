@@ -19,7 +19,7 @@ The issues will be reported here: https://github.com/argonne-lcf/test_frameworks
   mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_resnet50.py
   ```
 
-* MNIST: MNIST with DDP
+* MNIST: MNIST with DDP 
   ```bash
   mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_mnist.py
   ```
@@ -29,7 +29,7 @@ The issues will be reported here: https://github.com/argonne-lcf/test_frameworks
   mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_mpi4py.py
   ```
 
-* Checkpoint
+* Checkpoint: this is to test the file system and storage system
   ```bash
   mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_torch_checkpoint.py --output-folder /tmp/
   ```
