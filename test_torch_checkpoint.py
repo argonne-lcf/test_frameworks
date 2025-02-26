@@ -1,27 +1,25 @@
 #!/usr/bin/env python
 import torch
 from mpi4py import MPI
+import argparse
 comm = MPI.COMM_WORLD
 parser = argparse.ArgumentParser(
                     prog='Checkpoint',
                     description='What the program does',
                     epilog='Text at the bottom of help')
-parser.add_argument('--output-folder', type=str, default="/tmp/")  
+parser.add_argument('--output-folder', type=str, default="/tmp/")
+parser.add_argument('--dim', type=int, default=1048576)
 
 args = parser.parse_args()
-
-a=torch.Tensor((100))
-b=torch.Tensor((1048576))
-c=torch.Tensor((1637385))
-
+a=torch.ones((args.dim))
+data=dict()
 data = {
     "a": a,
-    "b": b,
-    "c": c
 }
 if comm.rank == 0:
     print(f"Saving checkpoint")
-torch.save(data, f"{args.output_folder}/data-{comm.rank}-of-{comm.size}.pt")
+with open(f"{args.output_folder}/data-{comm.rank}-of-{comm.size}.pt", "wb") as fout:
+    torch.save(data, fout)
 
 if comm.rank == 0:
     print(f"Loading checkpoint")
