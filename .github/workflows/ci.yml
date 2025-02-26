@@ -1,0 +1,95 @@
+name: Build and Test
+
+on:
+  pull_request:
+    branches: [main, dev]
+  push:
+
+jobs:
+  build-and-test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04]
+        gcc: [10]
+        python: ["3.10", "3.11", "3.12"]
+        venv: ["via-reqs"]
+    name: ${{ matrix.os }}-${{ matrix.gcc }}-${{ matrix.python }}-${{ matrix.venv }}
+    runs-on: ${{ matrix.os }}
+    env:
+      CC: gcc-${{ matrix.gcc }}
+      CXX: g++-${{ matrix.gcc }}
+      OMPI_ALLOW_RUN_AS_ROOT: 1
+      OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
+      PYTHON_VER: ${{ matrix.python }}
+      RDMAV_FORK_SAFE: "1"
+      VENV_PATH: "/home/runner/work/.venv/${{ matrix.venv }}"
+    steps:
+      - name: Clear disc
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+      - name: Push checkout
+        if: github.event_name == 'push'
+        uses: actions/checkout@v3
+      - name: PR checkout
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Add current directory to PYTHONPATH
+        if: matrix.venv == 'via-reqs'
+        run: echo "PYTHONPATH=$(pwd):$PYTHONPATH" >> $GITHUB_ENV
+      - name: Cache install modules
+        id: cache-modules
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.VENV_PATH }}
+          key: ${{ matrix.venv }}-gcc${{ matrix.gcc }}-python${{ matrix.python }}-${{ hashFiles('requirements.txt', 'setup.py') }}
+      - name: Install system dependencies
+        run: |
+          sudo apt update
+          sudo apt-get install -y $CC $CXX libc6 git
+          sudo apt-get install -y openmpi-bin openmpi-common libopenmpi-dev python3-dev
+      - name: Install dependencies
+        if: matrix.venv == 'via-reqs' && steps.cache-modules.outputs.cache-hit != 'true'
+        run: |
+          echo "venv: ${VENV_PATH} - gcc: $CC"
+          python -m venv ${VENV_PATH}
+          source ${VENV_PATH}/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: test_resnet50_ddp
+        run: |
+          source ${VENV_PATH}/bin/activate
+          mpirun -np 2 python3 ./test_resnet50.py
+      - name: test_resnet50_fsdp
+        run: |
+          source ${VENV_PATH}/bin/activate
+          mpirun -np 2 python3 ./test_resnet50.py --fsdp
+      - name: test_resnet50_profile
+        run: |
+          source ${VENV_PATH}/bin/activate
+          mpirun -np 2 python3 ./test_resnet50.py --fsdp --profile
+      - name: test_mnist
+        run: |
+          source ${VENV_PATH}/bin/activate
+          mpirun -np 2 python3 ./test_mnist.py 
+      - name: test_torch_dist
+        run: |
+          source ${VENV_PATH}/bin/activate
+          mpirun -np 2 python3 ./test_torch_dist.py
+      - name: test_mpi4py
+        run: |
+          source ${VENV_PATH}/bin/activate
+          mpirun -np 2 python3 ./test_mpi4py.py
+      - name: test_dtensor
+        run: |
+          source ${VENV_PATH}/bin/activate
+          mpirun -np 2 python3 ./test_dtensor.py --tp-size 2
