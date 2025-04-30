@@ -6,32 +6,32 @@ The issues will be reported here: https://github.com/argonne-lcf/test_frameworks
 
 * Torch Dist test: Torch dist communication tests, including all the collective communicatino tests. 
   ```bash
-  mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_torch_dist.py
+  mpiexec -np 24 --ppn 12 --cpu-bind $CPU_BIND python3 ./test_torch_dist.py
   ```
 
 * DTensor: This is testing the distributed matrix multiplication tests using DTensor. --dim is the total dimension of the global matrix, and --tp-size is the organization of the processor mesh (tp_size, world_size/tp_size)
   ```bash
-  mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_dtensor.py --tp-size 8 --dim 96
+  mpiexec -np 24 --ppn 12 --cpu-bind $CPU_BIND python3 ./test_dtensor.py --tp-size 8 --dim 96
   ```
 
 * ResNet50: Resnet50 with FSDP or DDP
   ```bash
-  mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_resnet50.py
+  mpiexec -np 24 --ppn 12 --cpu-bind $CPU_BIND python3 ./test_resnet50.py
   ```
 
 * MNIST: MNIST with DDP 
   ```bash
-  mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_mnist.py
+  mpiexec -np 24 --ppn 12 --cpu-bind $CPU_BIND python3 ./test_mnist.py
   ```
 
 * mpi4py: Testing mpi4py
   ```bash
-  mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_mpi4py.py
+  mpiexec -np 24 --ppn 12 --cpu-bind $CPU_BIND python3 ./test_mpi4py.py
   ```
 
 * Checkpoint: this is to test the file system and storage system
   ```bash
-  mpiexec -np 24 --ppn 12 --cpu-binding $CPU_BIND python3 ./test_torch_checkpoint.py --output-folder /tmp/
+  mpiexec -np 24 --ppn 12 --cpu-bind $CPU_BIND python3 ./test_torch_checkpoint.py --output-folder /tmp/
   ```
 
 ## How to contribute
