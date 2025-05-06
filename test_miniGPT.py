@@ -4,7 +4,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader, Dataset
 from transformers import GPT2Config, GPT2LMHeadModel
 import deepspeed
-from torch_setup import get_device, get_device_type, init_distributed,  get_profiler_activities,
+from torch_setup import get_device, get_device_type, init_distributed,  get_profiler_activities
 import json
 import argparse
 
@@ -115,9 +115,9 @@ def main():
             record_shapes=True,
             profile_memory=True,
         ) as prof:
-        train(model, loader, epochs=args.epochs, verbose=(rank==0))
-        os.makedirs(args.trace_dir, exist_ok=True)
-        prof.export_chrome_trace(f"{args.trace_dir}/trace-{rank}-of-{world_size}.json")
+            train(model, loader, epochs=args.epochs, verbose=(rank==0))
+            os.makedirs(args.trace_dir, exist_ok=True)
+            prof.export_chrome_trace(f"{args.trace_dir}/trace-{rank}-of-{world_size}.json")
     else:
         train(model, loader, epochs=args.epochs, verbose=(rank==0))
 
