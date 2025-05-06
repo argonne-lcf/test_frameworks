@@ -53,10 +53,10 @@ def train(rank, world_size):
     )
     train_loader = DataLoader(
         train_dataset,
-        batch_size=64,
+        batch_size=16,
         shuffle=False,
         sampler=train_sampler,
-        num_workers=0,
+        num_workers=4,
     )
 
     # Model
@@ -65,7 +65,7 @@ def train(rank, world_size):
 
     # Loss and Optimizer
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
+    optimizer = optim.Adam(model.parameters(), lr=0.0000001)
 
     for epoch in range(5):  # Number of epochs
         train_sampler.set_epoch(epoch)  # Ensure proper shuffling
@@ -88,7 +88,7 @@ def train(rank, world_size):
 
     # Save model (only on rank 0)
     if rank == 0:
-        torch.save(model.module.state_dict(), "/tmp/datascience/alcf_training/MNIST/mnist_ddp.pth")
+        torch.save(model.module.state_dict(), "./mnist_ddp.pth")
 
     dist.destroy_process_group()
 

@@ -79,9 +79,14 @@ def train(rank, world_size):
     )
 
     # Load CIFAR-10 as an example dataset
+    if rank == 0:
+        dataset = torchvision.datasets.CIFAR10(
+            root="./data", train=True, transform=transform, download=True
+        )
+    dist.barrier()
     dataset = torchvision.datasets.CIFAR10(
-        root="./data", train=True, transform=transform, download=True
-    )
+        root="./data", train=True, transform=transform, download=False
+    ) 
     sampler = DistributedSampler(dataset, num_replicas=world_size, rank=rank)
     dataloader = DataLoader(
         dataset,
