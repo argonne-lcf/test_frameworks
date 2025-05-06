@@ -97,7 +97,7 @@ def init_distributed(backend=None):
     rank = comm.rank
     world_size = comm.size
     local_rank = LOCAL_RANK
-
+    os.environ['LOCAL_RANK'] = str(LOCAL_RANK)
     import socket
 
     master_addr = socket.gethostname()

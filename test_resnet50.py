@@ -38,7 +38,7 @@ def parse_args():
         help="Number of ranks/devices to use in the device mesh.",
     )
     parser.add_argument(
-        "--steps", type=int, default=100, help="dimension of the matrix"
+        "--steps", type=int, default=10, help="dimension of the matrix"
     )
     parser.add_argument("--batch-size", type=int, default=16, help="batch size")
     parser.add_argument("--trace-dir", type=str, default="resnet50_trace")
