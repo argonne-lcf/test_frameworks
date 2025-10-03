@@ -82,7 +82,10 @@ def main(tensor_dimension_1d):
 
     for _ in range(10):
         x = torch.ones([1, dim_size],dtype=torch.bfloat16).to(device, non_blocking=True)
+        #x = torch.ones([1, dim_size],dtype=torch.float32).to(device, non_blocking=True)
+
         #y = torch.empty([1, dim_size],dtype=torch.bfloat16).to(device, non_blocking=True)
+        #y = torch.empty([1, dim_size],dtype=torch.float32) ## Do not send to GPU
         y = torch.empty([1, dim_size],dtype=torch.bfloat16) ## Do not send to GPU
         # print(x)
         t5 = perf_counter_ns() 

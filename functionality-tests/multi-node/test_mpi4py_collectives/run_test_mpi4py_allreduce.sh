@@ -18,9 +18,15 @@ let NRANKS=${NNODES}*${NRANKS_PER_NODE}
 
 #N=4
 #PPN=2
+#
+# Special case testing with swapping the mpich module
+module restore
+module unload mpich
+#module load mpich/opt/4.3.1
+module load mpich/opt/develop-git.6037a7a
 
 module load pti-gpu
-#module load hdf5
+module load hdf5
 
 ## To get the base conda activated. This is a Spack based miniforge installation
 #source /opt/aurora/25.190.0/spack/unified/0.10.0/install/linux-sles15-x86_64/gcc-13.3.0/miniforge3-24.3.0-0-gfganax/bin/activate
