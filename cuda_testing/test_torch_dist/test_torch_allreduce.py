@@ -48,7 +48,7 @@ def print_rank_0(msg):
 #comm.barrier()
 #dist.barrier(device_ids=[torch.xpu.current_device()])
 dist.barrier()
-torch.xpu.synchronize()
+torch.cuda.synchronize()
 
 niters = 10
 
@@ -60,7 +60,7 @@ for i in range(niters):
     # print_rank_0(x)
     t5 = datetime.datetime.now()
     dist.all_reduce(x, op=dist.ReduceOp.SUM)  # Added Extra op
-    torch.xpu.synchronize()
+    torch.cuda.synchronize()
     t6 = datetime.datetime.now()
     elapsed = (t6 - t5).total_seconds()
     time_iters[i] = elapsed

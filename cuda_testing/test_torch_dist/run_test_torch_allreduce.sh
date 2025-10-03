@@ -16,10 +16,8 @@ let NRANKS=${NNODES}*${NRANKS_PER_NODE}
 #N=4
 #PPN=2
 
-module restore
-module unload xalt
 module use /soft/modulefiles/
-module load conda/2025-09-24
+module load conda/2024-04-29
 conda activate
 
 export CPU_AFFINITY="verbose,list:0,1:8,9:16,17:24,25"
