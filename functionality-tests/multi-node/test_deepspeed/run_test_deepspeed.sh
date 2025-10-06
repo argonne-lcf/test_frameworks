@@ -13,6 +13,9 @@ NRANKS_PER_NODE=12
 
 let NRANKS=${NNODES}*${NRANKS_PER_NODE}
 
+module unload mpich
+module load mpich/opt/4.3.1
+
 module load pti-gpu
 #module load hdf5
 
