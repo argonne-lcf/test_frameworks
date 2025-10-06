@@ -13,13 +13,17 @@ NRANKS_PER_NODE=4
 
 let NRANKS=${NNODES}*${NRANKS_PER_NODE}
 
-module restore
-module unload xalt
+#N=4
+#PPN=2
+
 module use /soft/modulefiles/
 module load conda/2025-09-25
-conda activate base
-
+conda activate
 
 export CPU_AFFINITY="verbose,list:0,1:8,9:16,17:24,25"
 
-mpiexec -n ${NRANKS} -ppn ${NRANKS_PER_NODE} -l --line-buffer --cpu-bind ${CPU_AFFINITY} python test_torch_dist.py
+mpiexec -n ${NRANKS} -ppn ${NRANKS_PER_NODE} -l --line-buffer --cpu-bind ${CPU_AFFINITY} \
+    --env PALS_WORLD_SIZE=${NRANKS} \
+    python test_allreduce_mpi_backend.py
+
+#mpiexec -n ${N} -ppn ${PPN} -l --line-buffer --cpu-bind ${CPU_AFFINITY} python test_torch_allgather.py

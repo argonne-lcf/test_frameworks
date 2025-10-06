@@ -17,7 +17,7 @@ let NRANKS=${NNODES}*${NRANKS_PER_NODE}
 #PPN=2
 
 module use /soft/modulefiles/
-module load conda/2024-04-29
+module load conda/2025-09-25
 conda activate
 
 export CPU_AFFINITY="verbose,list:0,1:8,9:16,17:24,25"
