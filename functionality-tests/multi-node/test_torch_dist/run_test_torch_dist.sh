@@ -15,8 +15,8 @@ let NRANKS=${NNODES}*${NRANKS_PER_NODE}
 
 ## Special case of mpich swap
 #
-module unload mpich
-module load mpich/opt/4.3.1
+#module unload mpich
+#module load mpich/opt/4.3.1
 
 module load pti-gpu
 module load hdf5

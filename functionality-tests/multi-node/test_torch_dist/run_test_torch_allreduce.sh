@@ -48,6 +48,10 @@ export CCL_ATL_TRANSPORT=mpi
 #export CPU_AFFINITY="list:4-7:8-11"
 #export CCL_WORKER_AFFINITY="42,43"
 #export ZE_AFFINITY_MASK="0,1"
+#
+# Testing the mpich swap and rollback
+export CCL_ALLREDUCE=direct
+export CCL_ALLREDUCE_SCALEOUT=direct
 
 
 export CPU_AFFINITY="list:4-7:8-11:12-15:16-19:20-23:24-27:56-59:60-63:64-67:68-71:72-75:76-79"

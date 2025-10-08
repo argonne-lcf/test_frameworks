@@ -20,10 +20,10 @@ let NRANKS=${NNODES}*${NRANKS_PER_NODE}
 #PPN=2
 #
 # Special case testing with swapping the mpich module
-module restore
-module unload mpich
+#module restore
+#module unload mpich
 #module load mpich/opt/4.3.1
-module load mpich/opt/develop-git.6037a7a
+#module load mpich/opt/develop-git.6037a7a
 
 module load pti-gpu
 module load hdf5
@@ -55,6 +55,10 @@ export CCL_ATL_TRANSPORT=mpi
 #export CCL_WORKER_AFFINITY="42,43"
 #export ZE_AFFINITY_MASK="0,1"
 #
+
+## Special flags to test mpich swap and rollback
+export CCL_ALLREDUCE=direct
+export CCL_ALLREDUCE_SCALEOUT=direct
 
 export CCL_OP_SYNC=1
 

@@ -13,8 +13,8 @@ NRANKS_PER_NODE=12
 
 let NRANKS=${NNODES}*${NRANKS_PER_NODE}
 
-module unload mpich
-module load mpich/opt/4.3.1
+#module unload mpich
+#module load mpich/opt/4.3.1
 
 module load pti-gpu
 #module load hdf5
@@ -46,6 +46,9 @@ export FI_MR_CACHE_MONITOR=userfaultfd
 export CCL_PROCESS_LAUNCHER=pmix
 #export ZE_ENABLE_PCI_ID_DEVICE_ORDER=1
 #export CCL_OP_SYNC=1
+#
+export CCL_ALLREDUCE=direct
+export CCL_ALLREDUCE_SCALEOUT=direct
 
 export CPU_AFFINITY="list:4-7:8-11:12-15:16-19:20-23:24-27:56-59:60-63:64-67:68-71:72-75:76-79"
 export CCL_WORKER_AFFINITY="42,43,44,45,46,47,94,95,96,97,98,99"
