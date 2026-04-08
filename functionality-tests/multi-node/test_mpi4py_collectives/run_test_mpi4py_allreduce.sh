@@ -25,8 +25,8 @@ let NRANKS=${NNODES}*${NRANKS_PER_NODE}
 #module load mpich/opt/4.3.1
 #module load mpich/opt/develop-git.6037a7a
 
-module load pti-gpu
-module load hdf5
+#module load pti-gpu
+#module load hdf5
 
 ## To get the base conda activated. This is a Spack based miniforge installation
 #source /opt/aurora/25.190.0/spack/unified/0.10.0/install/linux-sles15-x86_64/gcc-13.3.0/miniforge3-24.3.0-0-gfganax/bin/activate
@@ -35,7 +35,9 @@ module load hdf5
 #conda activate /lus/tegu/projects/datasets/software/wheelforge/envs/conda_envs/aurora-frameworks-RC8-2025.2.0
 #
 #module use /home/cchannui/khalid/frameworks-test14/modulefiles
-module add frameworks/2025.2.0
+#module add frameworks/2025.2.0
+#
+module add frameworks
 
 #export ZE_FLAT_DEVICE_HIERARCHY=FLAT
 export FI_MR_CACHE_MONITOR=userfaultfd

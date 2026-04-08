@@ -28,12 +28,15 @@ init_time = (t4 - t3).total_seconds()
 dist_my_rank = rank
 dist_world_size = world_size
 
+#dim_size=32768 ## 2 GB per 2D array
+dim_size=46341 ## ~4.01 GB per 2D array
 
 if rank == 0:
     print(f"Torch version: {torch.__version__}")
     print(f"Torch installation: {torch.__file__}")
     print(f"Import time: {import_time}")
     print(f"Init time: {init_time}")
+    print(f"MSG Size = {(dim_size * dim_size * 2) / 1000 / 1000} MB")
 
 def print_rank_0(msg):
     if rank == 0:
@@ -52,7 +55,8 @@ for i in range(niters):
     dist.barrier(device_ids=[torch.xpu.current_device()])
     torch.xpu.synchronize()
     #x = torch.ones(4).to(device, non_blocking=True)
-    x = torch.ones([1024, 1024]).to(device, non_blocking=True)
+    #x = torch.ones([1024, 1024]).to(device, non_blocking=True)
+    x = torch.ones([dim_size, dim_size], dtype=torch.bfloat16).to(device, non_blocking=True)
 
     dist.barrier(device_ids=[torch.xpu.current_device()])
     torch.xpu.synchronize()

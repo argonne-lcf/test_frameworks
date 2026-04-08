@@ -7,3 +7,4 @@ outdir_sunspot
 functionality-tests/multi-node/test_incontext_benchmark/outdir_sunspot
 functionality-tests/multi-node/test_incontext_benchmark/outdir_sunspot/logs
 functionality-tests/multi-node/test_incontext_benchmark/outdir_sunspot/logs/25.190.0-RC3
+functionality-tests/multi-node/test_torch_dist/outdir_aurora/

@@ -1,15 +1,4 @@
 #!/bin/bash -x
-#PBS -l select=2
-#PBS -l place=scatter
-#PBS -l walltime=00:20:00
-#PBS -q prod
-#PBS -A datascience
-#PBS -l filesystems=home:flare
-#PBS -k doe
-#PBS -e /home/hossainm/ml_communications/in_context_benchmarks/llm_benchmarks/run_scripts/errordir_aurora
-#PBS -o /home/hossainm/ml_communications/in_context_benchmarks/llm_benchmarks/run_scripts/outdir_aurora
-#PBS -j oe
-#PBS -N 1T_TP2_R2
 
 ## Timezone US/Central
 export TZ='/usr/share/zoneinfo/US/Central'
